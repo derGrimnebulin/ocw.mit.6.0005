@@ -1,3 +1,4 @@
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -23,7 +24,18 @@ public class RulesOf6005 {
 	 */
 	public static boolean hasFeature(String name){
 		// TODO: Fill in this method, then remove the RuntimeException
-        throw new RuntimeException("hasFeature not implemented");
+				boolean truth = false;
+				final String[] features = {"lectures", "recitations", "text", "problem sets", "code review", "returnin", "projects", "team meetings", "quizzes"};
+				name = name.toLowerCase();
+
+				for (String f : features){
+					
+						if (f.equals(name)){
+							truth = true;
+						}
+				}
+				return truth;
+
 	}
 	
 	
@@ -42,7 +54,10 @@ public class RulesOf6005 {
 	 */
 	public static int computeGrade(int quiz, int pset, int project, int participation){
 		// TODO: Fill in this method, then remove the RuntimeException
-        throw new RuntimeException("computeGrade not implemented");
+				double total = 0.20*quiz + 0.40*pset + 0.30*project + 0.10*participation;
+				total = java.lang.Math.round(total);
+				return (int)(total);
+				
 	}
 	
 	
@@ -62,7 +77,30 @@ public class RulesOf6005 {
 	 */
 	public static Calendar extendDeadline(int request, int budget, Calendar duedate){
 		// TODO: Fill in this method, then remove the RuntimeException
-        throw new RuntimeException("extendDeadline not implemented");
+				int y = duedate.get(Calendar.YEAR);
+				int M = duedate.get(Calendar.MONTH);
+				int d = duedate.get(Calendar.DATE);
+				int h = duedate.get(Calendar.HOUR);
+				int m = duedate.get(Calendar.MINUTE);
+				int s = duedate.get(Calendar.SECOND);
+				
+				int p = request - budget;
+				if (p > 0){
+					int q = budget-3;
+					if (q > 0)
+						d += 3;
+					else
+						d += budget;
+				} else {
+					int q = request - 3;
+					if (q > 0)
+						d += 3;
+					else
+						d += request;
+				}
+				return new GregorianCalendar(y, M, d, h, m, s);
+
+        
 	}
 	
 	
