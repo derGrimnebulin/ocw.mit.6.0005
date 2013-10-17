@@ -12,10 +12,13 @@ public class PiGenerator {
      * @return precision digits of pi in hexadecimal.
      */
     public static int[] computePiInHex(int precision) {
-        // TODO: Implement (Problem 1.d)
-        return new int[0];
+    		final int[] digits = new int[precision];
+    		for (int i = 0x0; i < precision; i ++){
+    			digits[i] = piDigit(i + 0x1);	
+    		}
+    	  return digits;
     }
-
+    
     /**
      * Computes a^b mod m
      * 
@@ -78,3 +81,4 @@ public class PiGenerator {
         return s+t;
     }
 }
+
