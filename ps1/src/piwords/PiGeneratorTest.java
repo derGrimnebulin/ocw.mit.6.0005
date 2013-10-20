@@ -12,6 +12,7 @@ public class PiGeneratorTest {
         assertEquals(-1, PiGenerator.powerMod(-1, 0, 1));
         assertEquals(-1, PiGenerator.powerMod(-1, -1, 1));
         assertEquals(-1, PiGenerator.powerMod(0, -1, 1));
+        assertEquals(-1, PiGenerator.powerMod(0, 0, -1));
     }
     
     @Test
@@ -23,8 +24,13 @@ public class PiGeneratorTest {
     		assertArrayEquals(a, PiGenerator.computePiInHex(0x0));
     		assertArrayEquals(b, PiGenerator.computePiInHex(0x2));
     		assertArrayEquals(c, PiGenerator.computePiInHex(0xc));
+    
+    }
+    
+    @Test
+    public void piDigitTest() {
+    	assertEquals(-1, PiGenerator.piDigit(-1));
+    	
+    }
      		
   }
-
-    // TODO: Write more tests (Problem 1.a, 1.c)
-}
