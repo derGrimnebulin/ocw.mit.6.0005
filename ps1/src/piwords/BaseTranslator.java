@@ -9,21 +9,7 @@ public class BaseTranslator {
      * Stated in another way, digits is the fractional part of a number
      * expressed in baseA with the most significant digit first. The output is
      * the same number expressed in baseB with the most significant digit first.
-     * 
-     * To implement, logically, you're repeatedly multiplying the number by
-     * baseB and chopping off the most significant digit at each iteration:
-     * 
-     * for (i < precisionB) {
-     *   1. Keep a carry, initialize to 0.
-     *   2. From RIGHT to LEFT
-     *   	a. x = multiply the ith digit by baseB and add the carry
-     *      b. the new ith digit is x % baseA
-     *      c. carry = x / baseA
-     *   3. output[i] = carry
-     * 
-     * If digits[i] < 0 or digits[i] >= baseA for any i, return null
-     * If baseA < 2, baseB < 2, or precisionB < 1, return null
-     * 
+     *
      * @param digits The input array to translate. This array is not mutated.
      * @param baseA The base that the input array is expressed in.
      * @param baseB The base to translate into.
@@ -31,9 +17,31 @@ public class BaseTranslator {
      *                   have.
      * @return An array of size precisionB expressing digits in baseB.
      */
-    public static int[] convertBase(int[] digits, int baseA,
-                                    int baseB, int precisionB) {
-        // TODO: Implement (Problem 2.b)
-        return null;
-    }
+    public static int[] convertBase(final int[] digits, final int baseA, final int baseB, final int precisionB) {
+    	
+				for (int item : digits) {
+					if (item < 0 || item >= baseA) 
+						return null;
+				}
+				if ( baseA < 2 || baseB < 2 || precisionB < 1 )
+					return null;
+    	
+    		final int[] newDigits = new int[precisionB];
+  			final int[] digitsCopy = new int[digits.length];
+  			
+  			//Cannot mutate digits, so a copy of it is needed.
+  			System.arraycopy(digits, 0, digitsCopy, 0, digits.length); 
+  			for (int i = 0; i < precisionB; i++){
+  				int carry = 0;
+  				for (int j = digitsCopy.length - 1; j >= 0; j--) {
+  					int x = digitsCopy[j]*baseB + carry;
+  					digitsCopy[j] = x%baseA;
+  					carry = x / baseA;
+  				}
+  				
+  				newDigits[i] = carry;
+  				
+  			}
+        return newDigits;
+     }
 }
