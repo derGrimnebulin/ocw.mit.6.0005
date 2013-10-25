@@ -17,12 +17,12 @@ public class DigitsToStringConverterTest {
         assertEquals(expectedOutput, DigitsToStringConverter.convertDigitsToString(input, 4, alphabet));
         
         //remaining test cases for base-5 where 0 <= x_i[j] < 5
-        int[] x_1 = {0,0,0}; char[] y_1 = {'d','d','d'};
-        int[] x_2 = {0,0,1}; char[]	y_2	=	{'d','d','b'};
-        int[] x_3 = {0,1,2}; char[] y_3 = {'d','b','p'};
-        int[] x_4 = {1,2,3}; char[] y_4 = {'b','p','q'};
-        int[] x_5 = {2,3,4}; char[] y_5 = {'p','q','e'};
-        char[] xlphabet = {'b','d','p','q','e'};
+        int[] x_1 = {0,0,0}; String y_1 = "ddd";
+        int[] x_2 = {0,0,1}; String	y_2	=	"ddb";
+        int[] x_3 = {0,1,2}; String y_3 = "dbp";
+        int[] x_4 = {1,2,3}; String y_4 = "bpq";
+        int[] x_5 = {2,3,4}; String y_5 = "pqe";
+        char[] xlphabet = {'d','b','p','q','e'};
         assertEquals(y_1 ,DigitsToStringConverter.convertDigitsToString(x_1, 5, xlphabet));
         assertEquals(y_2 ,DigitsToStringConverter.convertDigitsToString(x_2, 5, xlphabet));
         assertEquals(y_3 ,DigitsToStringConverter.convertDigitsToString(x_3, 5, xlphabet));
@@ -47,9 +47,12 @@ public class DigitsToStringConverterTest {
     public void paramTest2() {
     	
     	//input 'represents' as base-2 number
-    	int[] input = {1,0,1,2};
+    	int[] x_1 = {1,0,1,2};
+    	
     	//0 -> 'c', 1 -> 'a'
-    	char[] alphabet = {'c','a'};
-    	assertEquals("", DigitsToStringConverter.convertDigitsToString(input, 2, alphabet));
+    	char[] alphabet1 = {'c','a'};
+    	char[] alphabet2 = {'c','a','d'};
+    	assertEquals("", DigitsToStringConverter.convertDigitsToString(x_1, 2, alphabet1));
+    	assertEquals("", DigitsToStringConverter.convertDigitsToString(x_1, 2, alphabet2));
     }
 }
