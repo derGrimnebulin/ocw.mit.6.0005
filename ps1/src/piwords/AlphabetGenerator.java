@@ -1,6 +1,7 @@
 package piwords;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class AlphabetGenerator {
     /**
@@ -58,32 +59,74 @@ public class AlphabetGenerator {
     }
     
     
-    //definitions of useful helper methods
-    public static final Map<Character, Integer> histogram(char[] stdAlphabet, String[] trainingData) {
-    		//initialize histogram with values from an alphabet
-    		final Map<Character, Integer> histogram = new HashMap<Character, Integer>(26);
-    		for (char item : stdAlphabet) {
-    			histogram.put(item,0);
-    		}
+    
+    /**
+     * Given an Array of strings, return a Map<Character, Integer> representing the histogram of the frequency 
+     * of distinct chars in each element of the Array.
+     * 
+     * @param  trainingData The occurrence of each alphabetic character present here is to be counted 
+     * @return histogram    A map between each character present in trainingData and it's number 
+     * 											of appearances.
+     */
+    public static final Map<Character, Integer> histogram(String[] trainingData) {
+    		//initialize histogram 
+    		final Map<Character, Integer> histogram = new HashMap<Character, Integer>();
     		
     		for (int i = 0; i < trainingData.length; i++) {
     				//look at each string in trainingData array
     				String item = trainingData[i];
-    				for(int j = 0; j < item.length(); j++ ) {
+    				
+    				for ( int j = 0; j < item.length(); j++ ) {
     						char key = item.charAt(j);
-    						if (histogram.containsKey(key))
-    								//increase the count in histogram if the newly 
-    								//encountered char is a valid alphabetic character
-    								histogram.put(key, histogram.get(key) + 1);
+    					
+    						if ( Character.isLetter(key) )
+    								if (histogram.containsKey(key))
+    										//increase the count in histogram if  
+    										//encountered char is a valid alphabetic character
+    										histogram.put(key, histogram.get(key) + 1);
+    								else
+    										histogram.put(key, 1);
+    								
 									
     				}
     		}
     		return histogram;
     }
-    private static final int Pr(int a) {
-    		// TODO: Implement PDF calculator
-    		return 0;
+    
+    /**
+     * Given a histogram containing the occurrences of alphabetic characters in data,
+     * return a Map<Character, Integers> representing the Probability Distribution Function 
+     * which maps each character to it's probability that it will be encountered in the data.
+     * 
+     * @param histogram Map between char and number of occurrences in some data from which 
+     * 									the probability that a given char will be encountered is derived.
+     * 
+     * @return PDF      Map between char and probability that a given char will be encountered
+     * 									in given set of data.
+     */
+    public static final Map<Character, Double> Pr( Map<Character, Integer> histogram) {
+    		// Initialize PDF
+    		final Map<Character, Double> PDF = new HashMap<Character, Double>();
+
+    		// Count the gross char occurrences
+    		Object[] values = histogram.values().toArray();
+    		double total = 0.0;
+    		for (Object item : values) {
+    				total += (Integer) item;
+    		}
+    		
+    		// Place keys in an Array
+    		Object[] keyArray = histogram.keySet().toArray();
+    		//Iterate over Array.
+    		for ( Object key : keyArray ) {
+    			// Place the probability of encountering each key into PDF
+    			PDF.put( (Character) key, histogram.get(key) / total );
+    			
+    		}
+    		return PDF;
     }
+    
+    
     private static final int CDF(int a) {
     		// TODO: Implement CDF calculator
     		return 0;
