@@ -1,4 +1,6 @@
 package piwords;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AlphabetGenerator {
     /**
@@ -50,9 +52,43 @@ public class AlphabetGenerator {
      * @return A char[] that maps every digit of the base to a char that the
      *         digit should be translated into.
      */
-    public static char[] generateFrequencyAlphabet(int base,
-                                                   String[] trainingData) {
+    public static char[] generateFrequencyAlphabet(int base, String[] trainingData) {
         // TODO: Implement (Problem 5.b)
         return null;
     }
+    
+    
+    //definitions of useful helper methods
+    public static final Map<Character, Integer> histogram(char[] stdAlphabet, String[] trainingData) {
+    		//initialize histogram with values from an alphabet
+    		final Map<Character, Integer> histogram = new HashMap<Character, Integer>(26);
+    		for (char item : stdAlphabet) {
+    			histogram.put(item,0);
+    		}
+    		
+    		for (int i = 0; i < trainingData.length; i++) {
+    				//look at each string in trainingData array
+    				String item = trainingData[i];
+    				for(int j = 0; j < item.length(); j++ ) {
+    						char key = item.charAt(j);
+    						if (histogram.containsKey(key))
+    								//increase the count in histogram if the newly 
+    								//encountered char is a valid alphabetic character
+    								histogram.put(key, histogram.get(key) + 1);
+									
+    				}
+    		}
+    		return histogram;
+    }
+    private static final int Pr(int a) {
+    		// TODO: Implement PDF calculator
+    		return 0;
+    }
+    private static final int CDF(int a) {
+    		// TODO: Implement CDF calculator
+    		return 0;
+    }
+    
+    
+    
 }
