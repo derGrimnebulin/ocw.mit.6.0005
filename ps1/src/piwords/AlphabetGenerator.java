@@ -67,14 +67,14 @@ public class AlphabetGenerator {
      * 
      * @param  trainingData The occurrence of each alphabetic character present here is to be counted 
      * @return histogram    A map between each character present in trainingData and it's number 
-     * 											of appearances.
+     * 	of appearances.
      */
     public static final Map<Character, Integer> histogram(String[] trainingData) {
     	//initialize histogram 
     	final Map<Character, Integer> histogram = new HashMap<Character, Integer>();
     		
     	for (int i = 0; i < trainingData.length; i++) {
-    		//look at each string in trainingData array
+    	//look at each string in trainingData array
     		String item = trainingData[i];
     				
     		for ( int j = 0; j < item.length(); j++ ) {
@@ -101,10 +101,10 @@ public class AlphabetGenerator {
      * histogram is not mutated.
      * 
      * @param histogram Map between char and number of occurrences in some data from which 
-     * 									the probability that a given char will be encountered is derived.
+     * 			the probability that a given char will be encountered is derived.
      * 
      * @return PDF      Map between char and probability that a given char will be encountered
-     * 									in given set of data.
+     * 		        in given set of data.
      */
     public static final Map<Character, Double> Pr( Map<Character, Integer> histogram) {
     		// Round to 3 decimal places.
