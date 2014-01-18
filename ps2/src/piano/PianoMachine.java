@@ -9,6 +9,7 @@ import music.Pitch;
 public class PianoMachine {
 	
 	private Midi midi;
+	public int OCTAVE = 0; //Must be in [-24,24].
   public Instrument CURRENT_INSTRUMENT = Midi.DEFAULT_INSTRUMENT;
 	/**
 	 * constructor for PianoMachine.
@@ -52,13 +53,29 @@ public class PianoMachine {
     	System.out.println(CURRENT_INSTRUMENT);
     }
     
+    /*.
+     * Helper function for shifting octaves. 
+     * Checks that self.OCTAVE is in the target interval.
+     */
+    private boolean octaveOkay() {
+    	if (this.OCTAVE >= 24 || this.OCTAVE <= -24) {
+    		return false;
+    	}
+    	return true;
+    }
+    	
+    
     /**
      * Shifts the keyboard up one Octave (12 semitones);
      * @modifies Pitch 
-     */
+     */    
     public void shiftUp() {
     	//TODO: implement for question 3
-    	//Pitch.transpose(Octave);
+    	if (octaveOkay()) {
+    		OCTAVE += 12;
+    		System.out.println("Octave UP");
+    	}else{
+    	System.out.println("Limit Reached");}
     }
     
     /**
@@ -67,6 +84,11 @@ public class PianoMachine {
      */
     public void shiftDown() {
     	//TODO: implement for question 3
+    	if (octaveOkay()) {
+    		OCTAVE -= 12;
+    		System.out.println("Octave DOWN");
+    	} else {
+    	System.out.println("Limit Reached");}
     }
     
     /**
