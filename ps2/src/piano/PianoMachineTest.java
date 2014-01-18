@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.sound.midi.MidiUnavailableException;
 
+import midi.Instrument;
 import midi.Midi;
 import music.Pitch;
 
@@ -18,16 +19,34 @@ public class PianoMachineTest {
     public void singleNoteTest() throws MidiUnavailableException {
         String expected0 = "on(61,PIANO) wait(100) off(61,PIANO)";
         
-    	Midi midi = Midi.getInstance();
+        Midi midi = Midi.getInstance();
 
-    	midi.clearHistory();
-    	
-        pm.beginNote(new Pitch(1));
-		Midi.wait(100);
-		pm.endNote(new Pitch(1));
+    		midi.clearHistory();
+    		
+    		//represents two transition events:
+    		//(UP,pr,DOWN), (DOWN,rel,UP)
+      	pm.beginNote(new Pitch(1));
+      	Midi.wait(100);
+      	pm.endNote(new Pitch(1));
 
         System.out.println(midi.history());
         assertEquals(expected0,midi.history());
     }
-
+    
+     @Test
+     public void instrumentTest() throws MidiUnavailableException {
+    	 	Midi midi = Midi.getInstance();
+    	 	
+    	 	// Middle case test.
+    	 	Instrument expected0 = Instrument.BRIGHT_PIANO;
+    	 	pm.changeInstrument();
+    	 	assertEquals(expected0, pm.CURRENT_INSTRUMENT);
+    	 	
+    	 	// Boundary case test.
+    	 	Instrument expected1 = Instrument.PIANO;
+    	 	pm.CURRENT_INSTRUMENT = Instrument.GUNSHOT;
+    	 	pm.changeInstrument();
+    	 	assertEquals(expected1, pm.CURRENT_INSTRUMENT);
+    	 	
+     }
 }

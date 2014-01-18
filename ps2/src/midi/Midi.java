@@ -20,57 +20,57 @@ public class Midi {
 	// time of previous note on or off, for logging purposes
 	private long prevEventTime;
 	
-    private Synthesizer synthesizer;
+  private Synthesizer synthesizer;
+  public final static Instrument DEFAULT_INSTRUMENT = Instrument.PIANO;
+    
+  // active MIDI channels, assigned to instruments
+  private final Map<midi.Instrument, MidiChannel> channels = new HashMap<midi.Instrument,MidiChannel>();
+    
+  // next available channel number (unassigned to an instrument yet)
+  private int nextChannel = 0;
 
-    public final static Instrument DEFAULT_INSTRUMENT = Instrument.PIANO;
-    
-    // active MIDI channels, assigned to instruments
-    private final Map<midi.Instrument, MidiChannel> channels = new HashMap<midi.Instrument,MidiChannel>();
-    
-    // next available channel number (unassigned to an instrument yet)
-    private int nextChannel = 0;
-    
-    //  volume -- a percentage?
-    private static final int VELOCITY = 100; 
+  //  volume -- a percentage?
+  private static final int VELOCITY = 100;
+  
 
-    /**
-     * check that invariants are preserved
-     */
-    private void checkRep() {
+  /**
+   * check that invariants are preserved
+   */
+  private void checkRep() {
         assert synthesizer != null;
         assert channels != null;
         assert nextChannel >= 0;
-    }
+   }
     
-    /**
-     * Make a Midi.
-     * @throws MidiUnavailableException if MIDI is not available
-     */
-    private Midi() throws MidiUnavailableException {
-        synthesizer = MidiSystem.getSynthesizer();
-        synthesizer.open();
-        synthesizer.loadAllInstruments(synthesizer.getDefaultSoundbank());
-        checkRep();
-        stringBuilder = new StringBuilder();
-        prevEventTime = -1;
-    }
+  /**
+   * Make a Midi.
+   * @throws MidiUnavailableException if MIDI is not available
+   */
+  private Midi() throws MidiUnavailableException {
+      synthesizer = MidiSystem.getSynthesizer();
+      synthesizer.open();
+      synthesizer.loadAllInstruments(synthesizer.getDefaultSoundbank());
+      checkRep();  
+      stringBuilder = new StringBuilder();
+      prevEventTime = -1;
+  }
     
-    private static Midi theMidi = null;
+  private static Midi theMidi = null;
     
-    public static Midi getInstance() throws MidiUnavailableException {
-    	if(theMidi == null) {
-    	    theMidi = new Midi();
-    	}
-    	return theMidi;
+  public static Midi getInstance() throws MidiUnavailableException {
+    if(theMidi == null) {
+    	  theMidi = new Midi();
     }
+    return theMidi;
+  }
 
-    /**
-     * Play a note on the Midi scale for a specified duration. Log to stringBuilder.
-     * 
-     * @param note: midi frequency value; 0<= note < 256.
-     * @param duration: note duration in ms; >= 0.
-     * @param instr: instrument in midi.Instrument enum.
-     */
+  /**
+   * Play a note on the Midi scale for a specified duration. Log to stringBuilder.
+   * 
+   * @param note: midi frequency value; 0<= note < 256.
+   * @param duration: note duration in ms; >= 0.
+   * @param instr: instrument in midi.Instrument enum.
+   */
     public void play(int note, int duration, midi.Instrument instr) {
         MidiChannel channel = getChannel(instr);
         synchronized (channel) {
@@ -78,9 +78,7 @@ public class Midi {
         }
         
         log(note,instr,true);
-        
         wait(duration);
-
         synchronized (channel) {
             channel.noteOff(note);
         }
@@ -150,7 +148,7 @@ public class Midi {
             now = System.currentTimeMillis();
         }
     }
-    
+
     /**
      * Returns a trace of events on this object since the last call to clearHistory().
      * Events are formatted as follows:
