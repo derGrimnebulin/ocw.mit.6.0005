@@ -69,5 +69,12 @@ public class PianoMachineTest {
     	 pm.shiftDown();
     	 assertEquals(-24, pm.OCTAVE);
     	 
+    	 // Shift-up/down from boundaries.
+    	 pm.OCTAVE = 24;
+    	 pm.shiftDown();
+    	 assertEquals(12, pm.OCTAVE);
+    	 pm.OCTAVE = -24;
+    	 pm.shiftUp();
+    	 assertEquals(-12, pm.OCTAVE);
      }
 }

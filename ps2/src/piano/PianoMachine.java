@@ -33,7 +33,7 @@ public class PianoMachine {
      */
     public void beginNote(Pitch rawPitch) {
     	int note = rawPitch.hashCode();
-    	midi.beginNote(new Pitch(note).toMidiFrequency(), CURRENT_INSTRUMENT);
+    	midi.beginNote(new Pitch(note).toMidiFrequency() + OCTAVE, CURRENT_INSTRUMENT);
     }
     
     /**
@@ -42,7 +42,7 @@ public class PianoMachine {
      */
     public void endNote(Pitch rawPitch) {
     	int note = rawPitch.hashCode();
-    	midi.endNote(new Pitch(note).toMidiFrequency(),CURRENT_INSTRUMENT);
+    	midi.endNote(new Pitch(note).toMidiFrequency() + OCTAVE, CURRENT_INSTRUMENT);
     }
     /**
      * Cycle the current instrument in the default ordering.
@@ -53,25 +53,13 @@ public class PianoMachine {
     	System.out.println(CURRENT_INSTRUMENT);
     }
     
-    /*.
-     * Helper function for shifting octaves. 
-     * Checks that self.OCTAVE is in the target interval.
-     */
-    private boolean octaveOkay() {
-    	if (this.OCTAVE >= 24 || this.OCTAVE <= -24) {
-    		return false;
-    	}
-    	return true;
-    }
-    	
-    
     /**
      * Shifts the keyboard up one Octave (12 semitones);
-     * @modifies Pitch 
+     * @modifies Octave state.
      */    
     public void shiftUp() {
-    	//TODO: implement for question 3
-    	if (octaveOkay()) {
+
+    	if (OCTAVE < 24) {
     		OCTAVE += 12;
     		System.out.println("Octave UP");
     	}else{
@@ -80,11 +68,10 @@ public class PianoMachine {
     
     /**
      * Shifts the keyboard up one Octave (12 semitones);
-     * @modifies Pitch.
+     * @modifies Octave state.
      */
     public void shiftDown() {
-    	//TODO: implement for question 3
-    	if (octaveOkay()) {
+    	if (OCTAVE > -24) {
     		OCTAVE -= 12;
     		System.out.println("Octave DOWN");
     	} else {
@@ -93,7 +80,7 @@ public class PianoMachine {
     
     /**
      * records notes to be played back later		
-     * @return boolean true if recording, false is not;
+     * @return boolean true if recording, false if not;
      */
     public boolean toggleRecording() {
     	return false;
@@ -102,6 +89,7 @@ public class PianoMachine {
     
     /**
      * Plays back audio from recorded sequence of notes 
+     * @modifies nothing.
      */
     protected void playback() {    	
         //TODO: implement for question 4
