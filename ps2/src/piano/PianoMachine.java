@@ -9,6 +9,7 @@ import music.Pitch;
 public class PianoMachine {
 	
 	private Midi midi;
+	public boolean isRecording = false; //default
 	public int OCTAVE = 0; //Must be in [-24,24].
   public Instrument CURRENT_INSTRUMENT = Midi.DEFAULT_INSTRUMENT;
 	/**
@@ -79,12 +80,17 @@ public class PianoMachine {
     }
     
     /**
-     * records notes to be played back later		
-     * @return boolean true if recording, false if not;
+     * Turns recording of pianoMachine events.
+     * @returns true if when recording is on, false otherwise.
+     * @modifies isRecording state.
      */
     public boolean toggleRecording() {
-    	return false;
-    	//TODO: implement for question 4
+    	
+    	if (isRecording == false) {
+    		return isRecording = true;
+    	}
+    	
+    	return isRecording = false;
     }
     
     /**

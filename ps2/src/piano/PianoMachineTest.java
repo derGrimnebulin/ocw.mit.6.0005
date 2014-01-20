@@ -77,4 +77,15 @@ public class PianoMachineTest {
     	 pm.shiftUp();
     	 assertEquals(-12, pm.OCTAVE);
      }
+     
+     @Test
+     public void recordStateTest() {
+    	 pm.isRecording = false;
+    	 pm.toggleRecording();
+    	 assertTrue(pm.isRecording);
+    	 
+    	 pm.isRecording = true;
+    	 pm.toggleRecording();
+    	 assertTrue(pm.isRecording == false);
+     }
 }
