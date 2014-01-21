@@ -9,6 +9,7 @@ import music.Pitch;
 public class PianoMachine {
 	
 	private Midi midi;
+	public StringBuilder record;
 	public boolean Recording = false; //default
 	public int OCTAVE = 0; //Must be in [-24,24].
   public Instrument CURRENT_INSTRUMENT = Midi.DEFAULT_INSTRUMENT;
@@ -62,6 +63,7 @@ public class PianoMachine {
 
     	if (OCTAVE < 24) {
     		OCTAVE += 12;
+    		
     		System.out.println("Octave UP");
     	}else{
     	System.out.println("Limit Reached");}
@@ -74,6 +76,7 @@ public class PianoMachine {
     public void shiftDown() {
     	if (OCTAVE > -24) {
     		OCTAVE -= 12;
+    		
     		System.out.println("Octave DOWN");
     	} else {
     	System.out.println("Limit Reached");}
@@ -93,12 +96,20 @@ public class PianoMachine {
     }
     
     /**
+     * Clears self.record
+     * 
+     */
+    public void clearRecord() {
+    	//TODO: maybe keep this.
+    }
+    
+    /**
      * Creates a log of note events while pianoMachine is
      * in a recording state.
      */
     public void recordThings() {
+    	record = new StringBuilder();
     	while (Recording == true) {
-    		//record stuff.
     	}
     }
     /**
