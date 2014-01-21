@@ -80,12 +80,20 @@ public class PianoMachineTest {
      
      @Test
      public void recordStateTest() {
-    	 pm.isRecording = false;
+    	 pm.Recording = false;
     	 pm.toggleRecording();
-    	 assertTrue(pm.isRecording);
+    	 assertTrue(pm.Recording);
     	 
-    	 pm.isRecording = true;
+    	 pm.Recording = true;
     	 pm.toggleRecording();
-    	 assertTrue(pm.isRecording == false);
+    	 assertTrue(pm.Recording == false);
      }
+     
+     @Test 
+     public void recordEventsTest() throws MidiUnavailableException {
+    	 Midi midi= Midi.getInstance();
+    	 midi.clearHistory();
+    	 
+     }
+     
 }

@@ -61,6 +61,7 @@ public class PianoApplet extends Applet {
                 	boolean isRecording = piano.toggleRecording();
                 	if(isRecording) {
                 		setBackground(Color.red);
+                		piano.recordThings();
                 	} else {
                 		setBackground(Color.green);
                 	}
