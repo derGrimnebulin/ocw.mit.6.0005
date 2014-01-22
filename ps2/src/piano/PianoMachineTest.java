@@ -91,9 +91,29 @@ public class PianoMachineTest {
      
      @Test 
      public void recordEventsTest() throws MidiUnavailableException {
+     	//TODO: Complete test case.
     	 Midi midi= Midi.getInstance();
     	 midi.clearHistory();
     	 
+    	 midi.beginNote(60, Instrument.PIANO);
+    	 midi.wait(100);
+    	 pm.Recording = true; //'R' event
+    	 pm.recordThings();
+    	 midi.beginNote(60, Instrument.PIANO);
+    	 midi.wait(100);
+    	 midi.beginNote(68, Instrument.BRIGHT_PIANO);
+    	 midi.wait(50);
+    	 pm.Recording = false; //'R' event
+    	 midi.beginNote(68, Instrument.BRIGHT_PIANO);
+    	 midi.wait(50);
+
+    	
+     }
+     
+     @Test
+     public void playbackTest() {
+    	 //TODO: Complete test case.
+    	 assertTrue(pm.Recording == false);
      }
      
 }
