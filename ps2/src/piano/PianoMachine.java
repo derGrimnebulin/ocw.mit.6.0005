@@ -1,10 +1,10 @@
 package piano;
 
 import javax.sound.midi.MidiUnavailableException;
-
 import midi.Instrument;
 import midi.Midi;
 import music.Pitch;
+import music.NoteEvent;
 
 public class PianoMachine {
 	
@@ -84,6 +84,7 @@ public class PianoMachine {
     
     /**
      * Updates Recording to the appropriate state.
+     * @return updated recording state.
      */
     public boolean toggleRecording() {
     	
@@ -108,12 +109,24 @@ public class PianoMachine {
      * in a recording state.
      */
     public void recordThings() {
+    	// Purge record of old data.
     	record = new StringBuilder();
     	while (Recording == true) {
+    		// do stuff.
     	}
     }
+    
     /**
-     * Plays back audio from recorded sequence of notes 
+     * Converts a record token into a NoteEvent object
+     * @param string containing data about a note event
+     * @return object containing note data
+     */
+    public NoteEvent toNoteEvent(String event) {
+    	return new NoteEvent(null, OCTAVE, CURRENT_INSTRUMENT, null);
+    	
+    }
+    /**
+     * Plays back audio stored in record
      * @modifies nothing.
      */
     protected void playback() {    	
