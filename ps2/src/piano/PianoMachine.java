@@ -1,5 +1,7 @@
 package piano;
 
+import java.util.Date;
+
 import javax.sound.midi.MidiUnavailableException;
 import midi.Instrument;
 import midi.Midi;
@@ -9,9 +11,13 @@ import music.NoteEvent;
 public class PianoMachine {
 	
 	private Midi midi;
+	
+	public boolean Recording;
+	public int OCTAVE; //Must be in [-24,24].
+	//For record keeping.
 	public StringBuilder record;
-	public boolean Recording = false; //default
-	public int OCTAVE = 0; //Must be in [-24,24].
+	private long prevEventTime;
+	
   public Instrument CURRENT_INSTRUMENT = Midi.DEFAULT_INSTRUMENT;
 	/**
 	 * constructor for PianoMachine.
@@ -19,6 +25,8 @@ public class PianoMachine {
 	 * initialize midi device and any other state that we're storing.
 	 */
     public PianoMachine() {
+    	Recording = false;
+    	OCTAVE = 0;
     	try {
             midi = Midi.getInstance();
         } catch (MidiUnavailableException e1) {
@@ -36,6 +44,8 @@ public class PianoMachine {
     public void beginNote(Pitch rawPitch) {
     	int note = rawPitch.hashCode();
     	midi.beginNote(new Pitch(note).toMidiFrequency() + OCTAVE, CURRENT_INSTRUMENT);
+    	
+    	recordThings(note, CURRENT_INSTRUMENT, true);
     }
     
     /**
@@ -45,10 +55,12 @@ public class PianoMachine {
     public void endNote(Pitch rawPitch) {
     	int note = rawPitch.hashCode();
     	midi.endNote(new Pitch(note).toMidiFrequency() + OCTAVE, CURRENT_INSTRUMENT);
+    	
+    	recordThings(note, CURRENT_INSTRUMENT, false);
     }
     /**
      * Cycle the current instrument in the default ordering.
-     * @modifies instrument state
+     * @modifies CURRENT_INSTRUMENT
      */
     public void changeInstrument() {
     	CURRENT_INSTRUMENT = CURRENT_INSTRUMENT.next();
@@ -57,62 +69,66 @@ public class PianoMachine {
     
     /**
      * Shifts the keyboard up one Octave (12 semitones);
-     * @modifies Octave state.
+     * @modifies OCTAVE
      */    
     public void shiftUp() {
 
     	if (OCTAVE < 24) {
     		OCTAVE += 12;
     		
-    		System.out.println("Octave UP");
     	}else{
     	System.out.println("Limit Reached");}
     }
     
     /**
      * Shifts the keyboard up one Octave (12 semitones);
-     * @modifies Octave state.
+     * @modifies OCTAVE
      */
     public void shiftDown() {
     	if (OCTAVE > -24) {
     		OCTAVE -= 12;
     		
-    		System.out.println("Octave DOWN");
     	} else {
     	System.out.println("Limit Reached");}
     }
     
     /**
      * Updates Recording to the appropriate state.
+     * When recording is toggled on, the previous record is overwritten.
      * @return updated recording state.
      */
     public boolean toggleRecording() {
     	
     	if (Recording == false) {
+    		record = new StringBuilder();
+    		prevEventTime = -1;
     		Recording = true;
     	} else {
-    	Recording = false;
+    		Recording = false;
     	}
     	return Recording;
     }
     
     /**
-     * Clears self.record
-     * 
+     * Appends actions from keyboard to a record
+     * @param int note
+     * @param Instrument instr
+     * @param boolean isNoteOn
      */
-    public void clearRecord() {
-    	//TODO: maybe keep this.
-    }
-    
-    /**
-     * Creates a log of note events while pianoMachine is
-     * in a recording state.
-     */
-    public void recordThings() {
-    	// Purge record of old data.
-    	record = new StringBuilder();
-    	while (Recording == true) {
-    		// do stuff.
+    public void recordThings(int note, midi.Instrument instr, boolean isNoteOn) {
+    	if (Recording) {
+    		//Must keep track of event Time separately from history.
+    		long time = (new Date()).getTime();
+    		if (prevEventTime > 0){
+    			long timeDiff = Math.round((time-prevEventTime)/10.0);
+    			record.append("wait("+timeDiff+") ");
+    		}
+    		prevEventTime = time;
+    		if (isNoteOn) {
+    			record.append("on("+note+","+instr+") ");
+    		} else {
+    			record.append("off("+note+","+instr+") ");
+    		}
     	}
     }
     
