@@ -92,29 +92,35 @@ public class PianoMachineTest {
     	 Midi midi= Midi.getInstance();
     	 midi.clearHistory();
     	 
-    	 String expected_0 = "on(60,PIANO) wait(100) off(60,PIANO) " + 
+    	 String expected_0 = "on(60,PIANO) wait(50) off(60,PIANO) wait(100) " + 
     	                     "on(68,BRIGHT_PIANO) wait(50) off(68,BRIGHT_PIANO)";
     	 
-    	 midi.beginNote(60, Instrument.PIANO);
+    	 pm.recordThings(60, Instrument.PIANO, true);
     	 Midi.wait(100);
+    	 pm.recordThings(60, Instrument.PIANO, false);
     	 
+    	 Midi.wait(10);
     	 pm.Recording = true; //'R' event
-    	 pm.recordThings();
-    	 
-    	 midi.beginNote(60, Instrument.PIANO);
-    	 Midi.wait(100);
-    	 midi.endNote(60, Instrument.PIANO);
-    	 
-    	 midi.beginNote(68, Instrument.BRIGHT_PIANO);
+
+    	 pm.recordThings(60, Instrument.PIANO, true);
     	 Midi.wait(50);
-    	 midi.endNote(68, Instrument.BRIGHT_PIANO);
+    	 pm.recordThings(60, Instrument.PIANO, false);
     	 
+    	 Midi.wait(100);
+    	 pm.recordThings(68, Instrument.BRIGHT_PIANO, true);
+    	 Midi.wait(50);
+    	 pm.recordThings(68, Instrument.BRIGHT_PIANO, false);
+    	 
+
     	 pm.Recording = false; //'R' event
     	 
-    	 midi.beginNote(68, Instrument.BRIGHT_PIANO);
+    	 Midi.wait(10);
+    	 pm.recordThings(68, Instrument.BRIGHT_PIANO, true);
     	 Midi.wait(50);
+    	 pm.recordThings(68, Instrument.BRIGHT_PIANO, false);
+
     	 
-    	 assertEquals(expected_0, pm.record);
+    	 assertEquals(expected_0, pm.record.toString().trim());
     	
      }
      
