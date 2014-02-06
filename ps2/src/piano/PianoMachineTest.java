@@ -101,7 +101,8 @@ public class PianoMachineTest {
     	 
     	 Midi.wait(10);
     	 pm.Recording = true; //'R' event
-
+    	 pm.record = new StringBuilder();
+    	 
     	 pm.recordThings(60, Instrument.PIANO, true);
     	 Midi.wait(50);
     	 pm.recordThings(60, Instrument.PIANO, false);
@@ -126,36 +127,45 @@ public class PianoMachineTest {
      
      @Test
      public void toNoteEventTest() {
-    	 long eventTime_0 = 0L;
+    	 long time_0 = 0L;
     	 String token_0 = "on(60,PIANO)";
-    	 NoteEvent expected_0 = new NoteEvent(new Pitch(0), eventTime_0, Instrument.PIANO, NoteEvent.Kind.start);
-    	 assertEquals(token_0, expected_0);
+    	 NoteEvent test_0 = pm.toNoteEvent(token_0, time_0);
+    	 NoteEvent expected_0 = new NoteEvent(new Pitch(0), time_0, Instrument.PIANO, NoteEvent.Kind.start);
+    	 assertEquals(test_0.getClass(), expected_0.getClass());
     	 
-    	 long eventTime_1 = 30L;
-    	 String token_1 = "on(60,PIANO)";
-    	 NoteEvent expected_1 = new NoteEvent(new Pitch(0),eventTime_1,Instrument.PIANO, NoteEvent.Kind.start);
-    	 assertEquals(token_1, expected_1);
+    	 long time_1 = 30L;
+    	 String token_1 = "off(60,PIANO)";
+    	 NoteEvent test_1 = pm.toNoteEvent(token_1, time_1);
+    	 NoteEvent expected_1 = new NoteEvent(new Pitch(0), time_1,Instrument.PIANO, NoteEvent.Kind.stop);
+    	 assertEquals(test_1.getClass(), expected_1.getClass());
      }
      
      @Test
      public void playbackTest() throws MidiUnavailableException {
+    	 pm.OCTAVE = 0;
     	 Midi midi = Midi.getInstance();
     	 midi.clearHistory();
     	 pm.record = new StringBuilder();
+    	 String expected = "";
+    	 
+    	 pm.playback();
+    	 assertEquals(expected, midi.history());
     	 
     	 // No changes
+    	 midi.clearHistory();
+    	 pm.record = new StringBuilder();
     	 String expected_0 = "on(60,PIANO) wait(100) off(60,PIANO)";
-    	 pm.record = new StringBuilder(); //clear record
     	 pm.record.append("on(60,PIANO) wait(100) off(60,PIANO)");
     	 pm.playback();
     	 assertEquals(expected_0, midi.history());
-    	 
+
     	 // Instrument Change
-    	 String expected_1 = "on(60,PIANO) wait(100) off(60,PIANO) " + 
-                             "on(68,BRIGHT_PIANO) wait(50) off(68,BRIGHT_PIANO)";
+    	 midi.clearHistory();
     	 pm.record = new StringBuilder();
+    	 String expected_1 = "on(60,PIANO) wait(100) off(60,PIANO) " + 
+                             "wait(10) on(68,BRIGHT_PIANO) wait(50) off(68,BRIGHT_PIANO)";
     	 pm.record.append("on(60,PIANO) wait(100) off(60,PIANO) " + 
-                          "on(68,BRIGHT_PIANO) wait(50) off(68,BRIGHT_PIANO)");
+                          "wait(10) on(68,BRIGHT_PIANO) wait(50) off(68,BRIGHT_PIANO)");
     	 pm.playback();
     	 assertEquals(expected_1, midi.history());
      }

@@ -5,16 +5,15 @@ import java.util.Date;
 import javax.sound.midi.MidiUnavailableException;
 import midi.Instrument;
 import midi.Midi;
+import music.NoteEvent.Kind;
 import music.Pitch;
 import music.NoteEvent;
 
 public class PianoMachine {
 	
 	private Midi midi;
-	
 	public boolean Recording;
 	public int OCTAVE; //Must be in [-24,24].
-	//For record keeping.
 	public StringBuilder record;
 	private long prevEventTime;
 	
@@ -43,9 +42,8 @@ public class PianoMachine {
      */
     public void beginNote(Pitch rawPitch) {
     	int note = rawPitch.hashCode();
-    	midi.beginNote(new Pitch(note).toMidiFrequency() + OCTAVE, CURRENT_INSTRUMENT);
-    	
-    	recordThings(note, CURRENT_INSTRUMENT, true);
+    	midi.beginNote(new Pitch(note).toMidiFrequency() + OCTAVE, CURRENT_INSTRUMENT);  	
+    	recordThings(new Pitch(note).toMidiFrequency() + OCTAVE, CURRENT_INSTRUMENT, true);
     }
     
     /**
@@ -54,9 +52,8 @@ public class PianoMachine {
      */
     public void endNote(Pitch rawPitch) {
     	int note = rawPitch.hashCode();
-    	midi.endNote(new Pitch(note).toMidiFrequency() + OCTAVE, CURRENT_INSTRUMENT);
-    	
-    	recordThings(note, CURRENT_INSTRUMENT, false);
+    	midi.endNote(new Pitch(note).toMidiFrequency() + OCTAVE, CURRENT_INSTRUMENT);	
+    	recordThings(new Pitch(note).toMidiFrequency() + OCTAVE, CURRENT_INSTRUMENT, false);
     }
     /**
      * Cycle the current instrument in the default ordering.
@@ -64,7 +61,6 @@ public class PianoMachine {
      */
     public void changeInstrument() {
     	CURRENT_INSTRUMENT = CURRENT_INSTRUMENT.next();
-    	System.out.println(CURRENT_INSTRUMENT);
     }
     
     /**
@@ -72,12 +68,9 @@ public class PianoMachine {
      * @modifies OCTAVE
      */    
     public void shiftUp() {
-
     	if (OCTAVE < 24) {
     		OCTAVE += 12;
-    		
-    	}else{
-    	System.out.println("Limit Reached");}
+    	}
     }
     
     /**
@@ -87,11 +80,8 @@ public class PianoMachine {
     public void shiftDown() {
     	if (OCTAVE > -24) {
     		OCTAVE -= 12;
-    		
-    	} else {
-    	System.out.println("Limit Reached");}
+    	}
     }
-    
     /**
      * Updates Recording to the appropriate state.
      * When recording is toggled on, the previous record is overwritten.
@@ -135,18 +125,58 @@ public class PianoMachine {
     /**
      * Converts a record token into a NoteEvent object
      * @param string containing data about a note event
+     * @param time in milliseconds that event occurred.
      * @return object containing note data
      */
-    public NoteEvent toNoteEvent(String event) {
-    	return new NoteEvent(null, OCTAVE, CURRENT_INSTRUMENT, null);
-    	
+    public NoteEvent toNoteEvent(String event, long time) {
+    	NoteEvent note = null;
+    	if ( event.substring(0,2).equals("on") ) {
+    		String[] data = event.substring( 3, event.length()-1 ).split(",");
+    		Kind kind = Kind.start;
+    		Pitch pitch = new Pitch( Integer.parseInt(data[0]) );
+    		Instrument instr = Instrument.valueOf( data[1] );
+    		note = new NoteEvent(pitch, time, instr, kind);
+    		
+    	} else 
+    	if ( event.substring(0,3).equals("off") ) {
+    		String[] data = event.substring( 4, event.length()-1 ).split(",");
+    		Kind kind = Kind.stop;
+    		Pitch pitch = new Pitch( Integer.parseInt( data[0]) );
+    		Instrument instr = Instrument.valueOf(data[1]);
+    		note = new NoteEvent(pitch, time, instr, kind);
+    		
+    	} 
+    	return note;
     }
     /**
      * Plays back audio stored in record
      * @modifies nothing.
      */
-    protected void playback() {    	
-        //TODO: implement for question 4
-    }
+    protected void playback() throws NullPointerException {
+    		long time = 0;
+    		
+    		if (record.length() > 0){
+    			String[] events = record.toString().split(" ");
+    			for (String event : events) {
+    				
+    				if (event.substring(0,4).equals("wait")) {
+    					int waitTime = Integer.parseInt( event.substring(5,event.length()-1) );
+    					Midi.wait(waitTime);
+    					time += waitTime;
+    				} else {
+    					NoteEvent noteEvent = toNoteEvent(event,time);
+    					Kind kind = noteEvent.getKind();
+    					int note = noteEvent.getPitch().hashCode() - 60;
+    					Instrument instr = noteEvent.getInstr();
 
-}
+    					if (kind == Kind.start) {
+    						midi.beginNote(new Pitch(note).toMidiFrequency(), instr);
+    					} else {
+    						midi.endNote(new Pitch(note).toMidiFrequency(), instr);
+    					}
+    				}
+    			}
+    		} 
+    	}
+
+	}
