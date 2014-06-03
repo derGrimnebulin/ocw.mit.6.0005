@@ -1,7 +1,7 @@
 package calculator;
 
 /*
- * TODO define your symbols and groups from problem 1 here
+ * 
  * Numbers:
  *  digits
  * Operators:
@@ -29,4 +29,6 @@ enum Type {
 		
 	SIN, // (
 	DEX, // )
+	
+	EOF //End of file
 }

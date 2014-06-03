@@ -1,12 +1,17 @@
 package calculator;
 
+import java.util.regex.*;
 import calculator.Type;
 
 /**
  * Calculator lexical analyzer.
  */
-public class Lexer {
-
+public class Lexer {	
+	private final String s = "";
+	private int i = 0;
+	private final Matcher matcher;
+	
+	
 	/**
 	 * Token in the stream.
 	 */
@@ -28,16 +33,25 @@ public class Lexer {
 	static class TokenMismatchException extends Exception {
 	}
 
-	// TODO write method spec
 	/**
-	 * Lexer is a method that finds and returns the next token in the input string
-	 * defined by the type enumeration. Lexer consumes one token of input at a time
-	 * and returns a token of that type. It removes this token from the input string.
-	 * @param input
-	 * @return Token
+	 *
+	 * @param input String to be converted into tokens
 	 */
-	public Token Lexer(String input) {
-		// TODO implement for Problem 2
-		return new Lexer.Token(null, null);
+	public Lexer(String s) {
+		this.s = s;
+		this.matcher = REGEX_TOKEN.matcher(s);
+	}
+	
+	/**
+	 * Modifies this object by consuming a token from the input stream.
+	 * @ returns next token in the stream, or EOF if the end has been reached
+	 * @ throws Syntax Error if invalid input is found
+	 */
+	public Token next() throws SyntaxErrorException {
+		//return EOF token if the end of the string has been reached
+		if (i >= s.length())
+			return new Token(Type.EOF, "");
+		
+		return new Token(null, null);
 	}
 }
