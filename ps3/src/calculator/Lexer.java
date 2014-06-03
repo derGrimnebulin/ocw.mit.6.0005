@@ -7,10 +7,18 @@ import calculator.Type;
  * Calculator lexical analyzer.
  */
 public class Lexer {	
-	private final String s = "";
+	private String s = "";
 	private int i = 0;
 	private final Matcher matcher;
 	
+	/**
+	 * Types expressed in regular grammar
+	 */
+	private static final Pattern digits = Pattern.compile( "[0-9]+" );
+	private static final Pattern number = Pattern.compile( digits.toString() + "(." + digits.toString() + ")?");
+	private static final Pattern unit = Pattern.compile( "pts" + "|" + "in");
+	private static final Pattern operator = Pattern.compile( "+" + "|" + "-" + "|" + "*" + "|"+ "/" );
+	private static final Pattern REGEX_TOKEN = Pattern.compile( number.toString() + "|" + unit.toString() + "|" + operator.toString() );
 	
 	/**
 	 * Token in the stream.
