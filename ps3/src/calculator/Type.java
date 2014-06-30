@@ -17,18 +17,9 @@ package calculator;
  * Token type.
  */
 enum Type {
-	
 	NUM, //digits 0-9
-		
-	ADD, // +
-	SUB, // -
-	MUL, // *
-	DIV, // /
-		
 	SCAL, // Scalars
-		
-	SIN, // (
-	DEX, // )
-	
-	EOF //End of file
+	OP,
+	EOF
+
 }
