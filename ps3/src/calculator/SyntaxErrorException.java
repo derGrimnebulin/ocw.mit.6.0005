@@ -1,7 +1,12 @@
 package calculator;
 
 public class SyntaxErrorException extends Exception {
-	    public SyntaxErrorException(String msg) {
+	    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+			public SyntaxErrorException(String msg) {
 	        super(msg);
 	    }
 }

@@ -18,8 +18,9 @@ package calculator;
  */
 enum Type {
 	NUM, //digits 0-9
-	SCAL, // Scalars
+	UNIT, // Scalars
 	OP,
+	PAREN,
 	EOF
 
 }

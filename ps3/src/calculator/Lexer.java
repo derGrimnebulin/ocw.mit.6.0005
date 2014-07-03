@@ -14,13 +14,12 @@ public class Lexer {
 	/**
 	 * Types expressed in regular grammar
 	 */
-	private static final Pattern number = Pattern.compile( "^([0-9]*[.]?[0-9]+)");
+	private static final Pattern number = Pattern.compile( "([0-9]*[.]?[0-9]+)");
 	private static final Pattern unit = Pattern.compile( "(in|pts)");
-	private static final Pattern operator = Pattern.compile("(\\Q+\\E)");
-	//private static final Pattern delimiter = Pattern.compile("[(]" + "|" + "[)]");
-	//private static final Pattern REGEX_TOKEN = Pattern.compile( "^(" + number.toString() + ")" + "|" + 
-	  // "(" + unit.toString() + ")" + "|" + "(" + operator.toString() + ")"	+ "(" + delimiter.toString() + ")" );
-	private static final Pattern REGEX_TOKEN = Pattern.compile("^" +number.toString() +"|"+unit.toString()+"|"+operator.toString());
+	private static final Pattern operator = Pattern.compile("(\\Q+\\E|\\Q-\\E|\\Q*\\E|\\Q/\\E)");
+	private static final Pattern delimiter = Pattern.compile("(\\Q(\\E|\\Q)\\E)");
+	private static final Pattern REGEX_TOKEN = Pattern.compile(number.toString() +
+			"|"+unit.toString()+"|"+operator.toString()+"|"+delimiter.toString());
 	/**
 	 * Token in the stream.
 	 */
@@ -45,8 +44,9 @@ public class Lexer {
 	
 	private static Type[] TOKENS_TYPES = {
 		Type.NUM,
-		Type.SCAL,
-		Type.OP
+		Type.UNIT,
+		Type.OP,
+		Type.PAREN
 	};
 
 	@SuppressWarnings("serial")
@@ -76,7 +76,6 @@ public class Lexer {
     // Look for the next token
     if (!matcher.find(i)) {
         // No token found
-    		System.out.println("hi");
         throw new SyntaxErrorException("syntax error at " + s.substring(i));
     }
 		
@@ -90,14 +89,9 @@ public class Lexer {
     // means that the regex matcher remembers where it matched and returns it
     // with the method group(i), where i=1 is the first set of parens.
     // Only one of the groups can match, so look for a non-null group.
-    System.out.println("Current # capturing groups = " + matcher.groupCount());
-    for (int i = 1; i <= matcher.groupCount(); i++) {
-    		//System.out.println(i);
-    		System.out.println(i);
-    		System.out.println(matcher.group(i));
+    for (int i = 1; i <= matcher.groupCount(); ++i) {
         if (matcher.group(i) != null) {
             // since i is 1-based, use i-1 to find the token type for this pattern
-        		//System.out.println(i);
             return new Token(TOKENS_TYPES[i-1], value);
         }
     }
